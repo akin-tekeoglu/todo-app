@@ -21,6 +21,9 @@ end
 
 group :development do
   gem 'listen', '~> 3.3'
+  # Reloads the page when files are changed
+  gem 'guard-livereload', '~> 2.5', require: false
+  gem "rack-livereload"
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
