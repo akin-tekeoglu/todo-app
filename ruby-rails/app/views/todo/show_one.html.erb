@@ -1,0 +1,18 @@
+ <div class="container mt-3">
+  <form method="POST" action="/todo/form">
+    <div class="mb-3">
+      <label for="title" class="form-label">Title</label>
+      <input name="title" type="text" class="form-control" id="title">
+    </div>
+    <div class="mb-3">
+      <label for="description" class="form-label">Description</label>
+      <input name="description" type="text" class="form-control" id="description">
+    </div>
+    <div class="mb-3">
+      <label class="form-label" for="date">Date</label>
+      <input name="event_date" type="datetime-local" class="form-control" id="date">
+    </div>
+    <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+    <button type="submit" class="btn btn-primary">Save</button>
+  </form>
+</div>
