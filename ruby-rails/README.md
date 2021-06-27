@@ -1,3 +1,9 @@
+# Requirements
+
+- Ruby 3
+- Rails
+- sqllite 3
+
 # Installation
 
 - `bundle install`

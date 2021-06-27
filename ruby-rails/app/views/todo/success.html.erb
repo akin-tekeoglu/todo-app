@@ -1,0 +1,13 @@
+ 
+<div class="container">
+  <div class="alert alert-success" role="alert">
+    Operation was successful. Redirecting to home page...
+  </div>
+</div>
+<% content_for :javascript do %>
+  <script>
+    $( document ).ready(function() {
+        setTimeout(function(){ window.location.replace("/todo?completed=false"); }, 3000);
+    });
+  </script>
+<% end %>
