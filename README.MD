@@ -16,7 +16,8 @@ The purpose of this repository is to illustrate similarities and differences bet
 
 | Folder  | Stack |
 | ------------- |:-------------:|
-| `ruby-rails`      | RoR app with ruby 3 and rails 6     |
+| `ruby-rails`  | RoR app with ruby 3 and rails 6 |
+| `go-gin`      | Golang app with go 1.16 and gin 1.17 |
 
 
 ## Usage
