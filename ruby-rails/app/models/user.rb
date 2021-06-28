@@ -5,4 +5,8 @@ class User < ApplicationRecord
       user.password = SecureRandom.hex
     end
   end
+
+  def todos
+    Todo.where(user_id: id)
+  end
 end
