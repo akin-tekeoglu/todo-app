@@ -6,7 +6,7 @@ class TodoController < ApplicationController
 
   def show_all
     @completed = params['completed']
-    @todos = Todo.for_current_user
+    @todos = Todo.for_current_user.order('event_date ASC')
     @todos = @todos.where(completed: @completed) unless @completed.nil?
   end
 
