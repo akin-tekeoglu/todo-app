@@ -5,9 +5,5 @@
   </div>
 </div>
 <% content_for :javascript do %>
-  <script>
-    $( document ).ready(function() {
-        setTimeout(function(){ window.location.replace("/todo?completed=false"); }, 3000);
-    });
-  </script>
+  <%= javascript_include_tag "success" %>
 <% end %>
