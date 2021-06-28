@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  root to: redirect('/todo?completed=false')
+  root to: redirect('/todo?completed=false&page=1')
   get '/todo', to: 'todo#show_all'
   post '/todo/toggle/:id', to: 'todo#toggle_complete'
   get '/todo/form(/:id)', to: 'todo#show_one'

@@ -2,13 +2,13 @@
   <a href="/todo/form" class="btn btn-primary">Create</a>
   <ul class="nav nav-tabs mt-2">
     <li class="nav-item">
-      <a class="nav-link <%= 'active' if @completed=="false" %>" href="/todo?completed=false">Incomplete</a>
+      <a class="nav-link <%= 'active' if @completed=="false" %>" href="/todo?completed=false&page=1">Incomplete</a>
     </li>
     <li class="nav-item">
-      <a class="nav-link <%= 'active' if @completed.nil? %>" href="/todo">All</a>
+      <a class="nav-link <%= 'active' if @completed.nil? %>" href="/todo?page=1">All</a>
     </li>
     <li class="nav-item">
-      <a class="nav-link <%= 'active' if @completed=="true" %>" href="/todo?completed=true">Completed</a>
+      <a class="nav-link <%= 'active' if @completed=="true" %>" href="/todo?completed=true&page=1">Completed</a>
     </li>
   </ul>
   <% @todos.each.with_index do |todo, index| %>
@@ -52,6 +52,25 @@
       <% if (index%3==2 || index == @todos.size-1) %>
       </div>
     <% end %>
+  <% end %>
+  <% if @todos.size>0 %>
+  <nav>
+    <ul class="pagination justify-content-center">
+      <li class="page-item <%= 'disabled' if @page==1 %>">
+        <a class="page-link" href="<%= set_page_param_in_query_string(request,@page-1) %>">Previous</a>
+      </li>
+      <% if @page>1 %>
+        <li class="page-item"><a class="page-link" href="<%= set_page_param_in_query_string(request,@page-1) %>"><%= @page-1 %></a></li>
+      <% end %>
+      <li class="page-item active"><a class="page-link" href="<%= set_page_param_in_query_string(request,@page) %>"><%= @page %></a></li>
+      <% if @count>@page*6 %>
+        <li class="page-item"><a class="page-link" href="<%= set_page_param_in_query_string(request,@page+1) %>"><%= @page+1 %></a></li>
+      <% end %>
+      <li class="page-item <%= 'disabled' if @count<=@page*6 %>">
+        <a class="page-link" href="<%= set_page_param_in_query_string(request,@page+1) %>">Next</a>
+      </li>
+    </ul>
+  </nav>
   <% end %>
 </div>
 <% content_for :javascript do %>

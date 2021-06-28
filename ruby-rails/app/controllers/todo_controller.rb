@@ -5,9 +5,12 @@ class TodoController < ApplicationController
   end
 
   def show_all
-    @completed = params['completed']
+    @completed = params[:completed]
     @todos = Todo.for_current_user.order('event_date ASC')
     @todos = @todos.where(completed: @completed) unless @completed.nil?
+    @page = params[:page].to_i
+    @count = @todos.count
+    @todos = @todos.order('event_date ASC').limit(6).offset((@page - 1)*6)
   end
 
   def show_one
