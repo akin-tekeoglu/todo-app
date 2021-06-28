@@ -7,6 +7,7 @@
 # Installation
 
 - `bundle install`
+- Create an oauth 2.0 web app in google developer console with `http://localhost:3000/auth/google_oauth2/callback` redirect URI
 - `EDITOR=vi rails credentials:edit` and place your credentials like below
 ```yaml
 google:
