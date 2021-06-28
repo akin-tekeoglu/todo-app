@@ -1,8 +1,8 @@
 # Requirements
 
 - Ruby 3
-- Rails
-- sqllite 3
+- Rails 6
+- Sqllite 3
 
 # Installation
 
