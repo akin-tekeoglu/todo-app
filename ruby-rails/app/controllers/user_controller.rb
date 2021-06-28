@@ -1,6 +1,6 @@
 class UserController < ApplicationController
-  skip_before_action :authorized
-  
+  skip_before_action :authorized, except: :logout
+
   def login; end
 
   def logout
@@ -9,15 +9,9 @@ class UserController < ApplicationController
   end
 
   def omniauth
-    @user = User.from_omniauth(auth)
+    @user = User.from_omniauth(request.env['omniauth.auth'])
     @user.save
     session[:user_id] = @user.id
     redirect_to '/'
-  end
-
-  private
-
-  def auth
-    request.env['omniauth.auth']
   end
 end
