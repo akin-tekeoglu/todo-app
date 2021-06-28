@@ -11,11 +11,11 @@ class TodoController < ApplicationController
   end
 
   def show_one
-    @todo = params.key?('id') ? Todo.for_current_user.find_by(user_id: session[:user_id], id: params[:id]) : Todo.new
+    @todo = params.key?('id') ? Todo.for_current_user.find!(params[:id]) : Todo.new
   end
 
   def create_or_update
-    @todo = params.key?('id') ? Todo.for_current_user.find_by(id: params[:id], user_id: session[:user_id]) : Todo.new
+    @todo = params.key?('id') ? Todo.for_current_user.find!(params[:id]) : Todo.new
     @todo.title = params[:title]
     @todo.description = params[:description]
     @todo.event_date = params[:event_date]
@@ -24,12 +24,12 @@ class TodoController < ApplicationController
   end
 
   def delete
-    Todo.for_current_user.destroy(params[:id])
+    Todo.for_current_user.destroy!(params[:id])
     render 'success'
   end
 
   def toggle_complete
-    Todo.for_current_user.find(params[:id]).toggle_completed
+    Todo.for_current_user.find!(params[:id]).toggle_completed
     render 'success'
   end
 end
