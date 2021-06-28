@@ -6,6 +6,7 @@ The purpose of this repository is to illustrate similarities and differences bet
 - Login with google
 - Authentication and authorization
 - Simple CRUD operations
+- Validation
 - Pagination
 - Filtering
 - CSRF protection
