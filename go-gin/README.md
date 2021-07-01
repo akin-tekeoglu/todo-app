@@ -5,4 +5,5 @@
 # Installation
 
 - `go install`
-- `go run main.go`
+- Make sure `~/go/bin` directory in your $PATH
+- `air`

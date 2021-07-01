@@ -7,9 +7,8 @@ import (
 )
 
 func SetupTodoControllers(e *gin.Engine) {
+
 	e.GET("/", func(c *gin.Context) {
-		c.HTML(http.StatusOK, "index.tmpl", gin.H{
-			"message": "Todo app",
-		})
+		c.HTML(http.StatusOK, "index", gin.H{})
 	})
 }
