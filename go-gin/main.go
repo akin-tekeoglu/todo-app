@@ -10,6 +10,7 @@ import (
 func main() {
 	r := gin.Default()
 	r.HTMLRender = ginview.Default()
-	controllers.SetupTodoControllers(r)
+	r.GET("/", controllers.ShowAll)
+	r.POST("/todo/form", controllers.Create)
 	r.Run()
 }

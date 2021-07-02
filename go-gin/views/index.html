@@ -1,4 +1,16 @@
-
 {{define "body"}}
-   <h1>hello world</h1>
+   <div class="container mt-3">
+      <a href="/todo/form" class="btn btn-primary">Create</a>
+      <ul class="nav nav-tabs mt-2">
+         <li class="nav-item">
+            <a class="nav-link" href="/todo?completed=false&page=1">Incomplete</a>
+         </li>
+         <li class="nav-item">
+            <a class="nav-link" href="/todo?page=1">All</a>
+         </li>
+         <li class="nav-item">
+            <a class="nav-link" href="/todo?completed=true&page=1">Completed</a>
+         </li>
+      </ul>
+   </div>
 {{end}}
