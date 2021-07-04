@@ -10,7 +10,7 @@ import (
 
 func ShowAll(c *gin.Context) {
 	todos := todo.GetAll()
-	c.HTML(http.StatusOK, "index", gin.H{"todos": todos})
+	c.HTML(http.StatusOK, "pages/index", gin.H{"todos": todos})
 }
 
 func ShowOne(c *gin.Context) {
