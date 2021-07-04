@@ -15,9 +15,33 @@ type Todo struct {
 	UserId      int
 }
 
+const (
+	Ok                 = iota
+	InvalidTitle       = iota
+	InvalidDescription = iota
+	InvalidEventDate   = iota
+)
+
+func New(title string, description string, eventDate string) (*Todo, uint) {
+	todoEventDate, err := time.Parse(time.RFC3339, eventDate)
+	if err != nil {
+		return nil, InvalidEventDate
+	}
+	if title != "" {
+		return nil, InvalidTitle
+	}
+	if description != "" {
+		return nil, InvalidDescription
+	}
+	return &Todo{Title: title, Description: description, EventDate: todoEventDate, Completed: false}, Ok
+}
+
 func (t *Todo) Save() {
-	t.Completed = false
-	utils.Execute("INSERT INTO todo(id, title, description, completed, event_date, user_id) VALUES ( ?, ?, ?, ?, ? ,? )", t.Id, t.Title, t.Description, t.Completed, t.EventDate.Format(time.RFC3339), t.UserId)
+	if t.Id == 0 {
+		utils.Execute("INSERT INTO todo(id, title, description, completed, event_date, user_id) VALUES ( ?, ?, ?, ?, ? ,? )", t.Id, t.Title, t.Description, t.Completed, t.EventDate.Format(time.RFC3339), t.UserId)
+	} else {
+		utils.Execute("UPDATE todo SET title=?, description=?, event_date=? WHERE id=?", t.Title, t.Description, t.EventDate.Format(time.RFC3339), t.Id)
+	}
 }
 
 func (t *Todo) ToggleCompleted() {
@@ -36,7 +60,13 @@ func GetById(id int) Todo {
 func processRow(rows *sql.Rows) interface{} {
 	todoItem := Todo{}
 	var eventDate string
-	rows.Scan(&todoItem.Id, &todoItem.Title, &todoItem.Description, &todoItem.Completed, &eventDate, &todoItem.UserId)
-	todoItem.EventDate, _ = time.Parse(time.RFC3339, eventDate)
+	err := rows.Scan(&todoItem.Id, &todoItem.Title, &todoItem.Description, &todoItem.Completed, &eventDate, &todoItem.UserId)
+	if err != nil {
+		panic(err)
+	}
+	todoItem.EventDate, err = time.Parse(time.RFC3339, eventDate)
+	if err != nil {
+		panic(err)
+	}
 	return todoItem
 }

@@ -3,7 +3,6 @@ package controllers
 import (
 	"net/http"
 	"strconv"
-	"time"
 	"todo-app/models/todo"
 
 	"github.com/gin-gonic/gin"
@@ -22,13 +21,24 @@ func ShowOne(c *gin.Context) {
 	c.HTML(http.StatusOK, "todo", gin.H{"todo": todoItem})
 }
 
-func Create(c *gin.Context) {
-	eventDate, _ := time.Parse(time.RFC3339, c.PostForm("eventDate"))
-	todo := todo.Todo{
-		Title:       c.PostForm("title"),
-		Description: c.PostForm("description"),
-		EventDate:   eventDate,
+func Save(c *gin.Context) {
+	todoItem, result := todo.New(c.PostForm("title"), c.PostForm("description"), c.PostForm("eventDate"))
+	if result != todo.Ok {
+		c.HTML(http.StatusOK, "todo", gin.H{"result": result, "title": c.PostForm("title"), "description": c.PostForm("description"), "eventDate": c.PostForm("eventDate")})
 	}
-	todo.Save()
-	c.HTML(http.StatusOK, "index", gin.H{})
+	if id, err := strconv.Atoi(c.Param("id")); err == nil {
+		todoItem.Id = id
+	}
+	todoItem.Save()
+	c.HTML(http.StatusOK, "todo_success", gin.H{})
+}
+
+func ToggleCompleted(c *gin.Context) {
+	if id, err := strconv.Atoi(c.Param("id")); err == nil {
+		todoItem := todo.GetById(id)
+		todoItem.ToggleCompleted()
+		c.HTML(http.StatusOK, "todo_success", gin.H{})
+	} else {
+		c.Status(http.StatusNotFound)
+	}
 }

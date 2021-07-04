@@ -11,6 +11,8 @@ func main() {
 	r := gin.Default()
 	r.HTMLRender = ginview.Default()
 	r.GET("/", controllers.ShowAll)
-	r.POST("/todo/form", controllers.Create)
+	r.GET("/todo/form/*id", controllers.ShowOne)
+	r.POST("/todo/form/*id", controllers.Save)
+	r.POST("/todo/:id/toggle", controllers.ToggleCompleted)
 	r.Run()
 }
