@@ -5,5 +5,6 @@
 # Installation
 
 - `go install`
-- Make sure `~/go/bin` directory in your $PATH
-- `air`
+- `mkdir -p storage && sqlite3 storage/dev.db "create table temp(field int); drop table temp;"`
+- `go run ./migrations/migrate.go`
+- `go run main.go`

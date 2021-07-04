@@ -12,5 +12,10 @@
             <a class="nav-link" href="/todo?completed=true&page=1">Completed</a>
          </li>
       </ul>
+      <ul>
+      {{range $todo := .todos}}
+         <li>{{$todo.Title}}</li>
+      {{end}}
+      </ul>
    </div>
 {{end}}

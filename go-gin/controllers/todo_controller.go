@@ -10,13 +10,14 @@ import (
 )
 
 func ShowAll(c *gin.Context) {
-	c.HTML(http.StatusOK, "index", gin.H{})
+	todos := todo.GetAll()
+	c.HTML(http.StatusOK, "index", gin.H{"todos": todos})
 }
 
 func ShowOne(c *gin.Context) {
 	todoItem := new(todo.Todo)
 	if id, err := strconv.Atoi(c.Param("id")); err == nil {
-		todoItem = todo.GetById(id)
+		*todoItem = todo.GetById(id)
 	}
 	c.HTML(http.StatusOK, "todo", gin.H{"todo": todoItem})
 }
