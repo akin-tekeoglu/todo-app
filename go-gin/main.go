@@ -3,6 +3,7 @@ package main
 import (
 	"os"
 	"todo-app/controllers"
+	"todo-app/utils/context"
 	"todo-app/utils/middleware"
 
 	"github.com/foolin/goview/supports/ginview"
@@ -17,16 +18,18 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	r := gin.Default()
+	e := context.Engine{GinEngine: gin.Default()}
 	store := cookie.NewStore([]byte(os.Getenv("COOKIE_SECRET")))
-	r.Use(sessions.Sessions("user", store))
-	r.Use(middleware.Authenticate)
-	r.HTMLRender = ginview.Default()
-	r.GET("/", controllers.ShowAll)
-	r.GET("/login", controllers.Login)
-	r.GET("/oauth/google", controllers.GoogleOAuth)
-	r.GET("/todo/form/*id", controllers.ShowOne)
-	r.POST("/todo/form/*id", controllers.Save)
-	r.POST("/todo/:id/toggle", controllers.ToggleCompleted)
-	r.Run()
+	e.Use(sessions.Sessions("user", store))
+	e.GinEngine.HTMLRender = ginview.Default()
+	e.GET("/login", controllers.Login)
+	e.GET("/oauth/google", controllers.GoogleOAuth)
+	e.Use(middleware.Authenticate)
+	{
+		e.GET("/", controllers.ShowAll)
+		e.GET("/todo/form/*id", controllers.ShowOne)
+		e.POST("/todo/form/*id", controllers.Save)
+		e.POST("/todo/:id/toggle", controllers.ToggleCompleted)
+	}
+	e.GinEngine.Run()
 }
