@@ -35,7 +35,7 @@ func Save(c *gin.Context) {
 
 func ToggleCompleted(c *gin.Context) {
 	if id, err := strconv.Atoi(c.Param("id")); err == nil {
-		todoItem := todo.GetById(id)
+		todoItem := todo.GetById(id, 0)
 		todoItem.ToggleCompleted()
 		c.HTML(http.StatusOK, "todo_success", gin.H{})
 	} else {

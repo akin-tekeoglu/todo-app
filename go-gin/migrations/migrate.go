@@ -1,15 +1,22 @@
 package main
 
 import (
+	"os"
+
 	"github.com/golang-migrate/migrate/v4"
 	_ "github.com/golang-migrate/migrate/v4/database/sqlite3"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
+	"github.com/joho/godotenv"
 )
 
 func main() {
+	err := godotenv.Load()
+	if err != nil {
+		panic(err)
+	}
 	m, err := migrate.New(
 		"file://./migrations",
-		"sqlite3://./storage/dev.db")
+		os.Getenv("DB"))
 	if err != nil {
 		panic(err)
 	}
