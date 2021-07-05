@@ -18,10 +18,10 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	e := context.Engine{GinEngine: gin.Default()}
+	e := context.NewEngine(gin.Default())
 	store := cookie.NewStore([]byte(os.Getenv("COOKIE_SECRET")))
 	e.Use(sessions.Sessions("user", store))
-	e.GinEngine.HTMLRender = ginview.Default()
+	e.HTMLRender(ginview.Default())
 	e.GET("/login", controllers.Login)
 	e.GET("/oauth/google", controllers.GoogleOAuth)
 	e.Use(middleware.Authenticate)
@@ -31,5 +31,5 @@ func main() {
 		e.POST("/todo/form/*id", controllers.Save)
 		e.POST("/todo/:id/toggle", controllers.ToggleCompleted)
 	}
-	e.GinEngine.Run()
+	e.Run()
 }

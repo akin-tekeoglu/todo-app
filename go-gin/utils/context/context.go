@@ -4,6 +4,7 @@ import (
 	"todo-app/models/user"
 
 	"github.com/gin-gonic/gin"
+	"github.com/gin-gonic/gin/render"
 )
 
 type Context struct {
@@ -11,7 +12,7 @@ type Context struct {
 	User       *user.User
 }
 
-func New(c *gin.Context) Context {
+func newContext(c *gin.Context) Context {
 	wrappers := Context{ginContext: c}
 	currentUser, exists := c.Get("user")
 	if exists {
@@ -44,23 +45,35 @@ func (c *Context) PostForm(key string) string {
 }
 
 type Engine struct {
-	GinEngine *gin.Engine
+	ginEngine *gin.Engine
+}
+
+func NewEngine(e *gin.Engine) Engine {
+	return Engine{ginEngine: e}
 }
 
 func (e *Engine) GET(relativePath string, handler func(c *Context)) {
-	e.GinEngine.GET(relativePath, func(c *gin.Context) {
-		ctx := New(c)
+	e.ginEngine.GET(relativePath, func(c *gin.Context) {
+		ctx := newContext(c)
 		handler(&ctx)
 	})
 }
 
 func (e *Engine) POST(relativePath string, handler func(c *Context)) {
-	e.GinEngine.POST(relativePath, func(c *gin.Context) {
-		ctx := New(c)
+	e.ginEngine.POST(relativePath, func(c *gin.Context) {
+		ctx := newContext(c)
 		handler(&ctx)
 	})
 }
 
 func (e *Engine) Use(middleware gin.HandlerFunc) {
-	e.GinEngine.Use(middleware)
+	e.ginEngine.Use(middleware)
+}
+
+func (e *Engine) Run(addr ...string) {
+	e.ginEngine.Run(addr...)
+}
+
+func (e *Engine) HTMLRender(htmlRender render.HTMLRender) {
+	e.ginEngine.HTMLRender = htmlRender
 }
