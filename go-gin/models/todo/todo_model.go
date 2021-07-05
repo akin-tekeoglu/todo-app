@@ -1,7 +1,6 @@
 package todo
 
 import (
-	"database/sql"
 	"time"
 	"todo-app/utils"
 )
@@ -27,10 +26,10 @@ func New(title string, description string, eventDate string) (*Todo, uint) {
 	if err != nil {
 		return nil, InvalidEventDate
 	}
-	if title != "" {
+	if title == "" {
 		return nil, InvalidTitle
 	}
-	if description != "" {
+	if description == "" {
 		return nil, InvalidDescription
 	}
 	return &Todo{Title: title, Description: description, EventDate: todoEventDate, Completed: false}, Ok
@@ -38,35 +37,40 @@ func New(title string, description string, eventDate string) (*Todo, uint) {
 
 func (t *Todo) Save() {
 	if t.Id == 0 {
-		utils.Execute("INSERT INTO todo(id, title, description, completed, event_date, user_id) VALUES ( ?, ?, ?, ?, ? ,? )", t.Id, t.Title, t.Description, t.Completed, t.EventDate.Format(time.RFC3339), t.UserId)
+		utils.Db().NamedExec("INSERT INTO todo(title, description, completed, event_date, user_id) VALUES (:title, :description, :completed, :event_date , :user_id)", map[string]interface{}{
+			"title":       t.Title,
+			"description": t.Description,
+			"completed":   t.Completed,
+			"event_date":  t.EventDate.Format(time.RFC3339),
+			"user_id":     t.UserId,
+		})
 	} else {
-		utils.Execute("UPDATE todo SET title=?, description=?, event_date=? WHERE id=?", t.Title, t.Description, t.EventDate.Format(time.RFC3339), t.Id)
+		utils.Db().NamedExec("UPDATE todo SET title=:title, description=:description, event_date=:event_date WHERE id=:id AND user_id=:user_id", map[string]interface{}{
+			"title":       t.Title,
+			"description": t.Description,
+			"event_date":  t.EventDate.Format(time.RFC3339),
+			"user_id":     t.UserId,
+			"id":          t.Id,
+		})
 	}
 }
 
 func (t *Todo) ToggleCompleted() {
 	t.Completed = !t.Completed
-	utils.Execute("UPDATE todo SET completed=? WHERE id=?", t.Completed, t.Id)
+	utils.Db().NamedExec("UPDATE todo SET completed=:completed WHERE id=:id", map[string]interface{}{
+		"completed": t.Completed,
+		"id":        t.Id,
+	})
 }
 
-func GetAll() []Todo {
-	return utils.Query("SELECT id, title, description, completed, event_date, user_id FROM todo", Todo{}, processRow).([]Todo)
+func GetAll(userId int) []Todo {
+	todos := []Todo{}
+	utils.Db().Select(&todos, "SELECT id, title, description, completed, event_date, user_id FROM todo where user_id=?", userId)
+	return todos
 }
 
-func GetById(id int) Todo {
-	return utils.Single("SELECT id, title, description, completed, event_date, user_id FROM todo WHERE id=?", Todo{}, processRow, id).(Todo)
-}
-
-func processRow(rows *sql.Rows) interface{} {
+func GetById(id int, userId int) Todo {
 	todoItem := Todo{}
-	var eventDate string
-	err := rows.Scan(&todoItem.Id, &todoItem.Title, &todoItem.Description, &todoItem.Completed, &eventDate, &todoItem.UserId)
-	if err != nil {
-		panic(err)
-	}
-	todoItem.EventDate, err = time.Parse(time.RFC3339, eventDate)
-	if err != nil {
-		panic(err)
-	}
+	utils.Db().Get(&todoItem, "SELECT id, title, description, completed, event_date, user_id FROM todo WHERE id=? and user_id=?", id)
 	return todoItem
 }
