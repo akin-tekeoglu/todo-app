@@ -4,12 +4,13 @@ import (
 	"net/http"
 	"strconv"
 	"todo-app/models/todo"
+	"todo-app/utils/middleware"
 
 	"github.com/gin-gonic/gin"
 )
 
 func ShowAll(c *gin.Context) {
-	todos := todo.GetAll(0)
+	todos := todo.GetAll(middleware.CurrentUser(c).Id)
 	c.HTML(http.StatusOK, "pages/index", gin.H{"todos": todos})
 }
 
@@ -41,4 +42,8 @@ func ToggleCompleted(c *gin.Context) {
 	} else {
 		c.Status(http.StatusNotFound)
 	}
+}
+
+func username() {
+
 }
